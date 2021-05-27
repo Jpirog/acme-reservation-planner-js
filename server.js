@@ -132,6 +132,9 @@ const express = require('express');
 const app = express();
 const chalk = require('chalk');
 const path = require('path');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 
 app.use(express.json());
@@ -160,7 +163,7 @@ app.get('/api/restaurants', async(req, res, next)=> {
 
 app.get('/api/users/:userId/reservations', async(req, res, next)=> {
   try {
-    res.send(await Reservation.findAll({ where: { userId: req.params.userId }}));
+    res.send(await Reservation.findAll({ where: { userId: req.params.userId }, include:[{model: Restaurant}]}));
   }
   catch(ex){
     next(ex);
@@ -169,6 +172,7 @@ app.get('/api/users/:userId/reservations', async(req, res, next)=> {
 
 app.post('/api/users/:userId/reservations', async(req, res, next)=> {
   try {
+    console.log("*** IN MAIN, ADD RESERVATION:",req)
     res.status(201).send(await Reservation.create({ userId: req.params.userId, restaurantId: req.body.restaurantId}));
   }
   catch(ex){

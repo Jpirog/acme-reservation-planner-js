@@ -15,7 +15,7 @@ const renderUsers = async (users) => {
 
 const renderRestaurants = async (restaurants) => {
   const html = restaurants.map(c => `
-  <li>
+  <li data-restid='${c.id}'>
   ${c.id}/${c.name}
   </li>
   `).join('');
@@ -23,9 +23,10 @@ const renderRestaurants = async (restaurants) => {
 }
 
 const renderReservations = async (reservations) => {
+  console.log("*** reservations", reservations)
   const html = reservations.map(c => `
   <li>
-  ${c.id}/${c.name}
+  ${c.id}/${c.restaurant.name}
   </li>
   `).join('');
   reservationList.innerHTML = html;
@@ -39,7 +40,7 @@ const init = async () => {
     renderUsers(data);    
     const response2 = await fetch('/api/restaurants');
     const data2 = await response2.json()
-    console.log(data2[0].name);
+    console.log(data2);
     renderRestaurants(data2);
   }
   catch (ex) {
@@ -51,7 +52,23 @@ window.addEventListener('hashchange', async () => {
   const userId = window.location.hash.slice(1);
   const response = await (fetch(`/api/users/${userId}/reservations`))
   const data = await response.json()
+  console.log(data)
   renderReservations(data);
 })
 
+restList?.addEventListener('click', async (ev) => {
+  const clickedId = ev.target.dataset.restid;
+  const userId = window.location.hash.slice(1);
+  console.log("NEW reservation", userId, clickedId)
+  const newRes = await (fetch(`/api/users/${userId}/reservations`, 
+    { method: 'POST', 
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({"restaurantId": clickedId}) }))
+
+  const response = await (fetch(`/api/users/${userId}/reservations`))
+  const data = await response.json()
+//  console.log(data)
+  renderReservations(data);
+    
+})
 init();
