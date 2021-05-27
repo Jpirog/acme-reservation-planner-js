@@ -1,0 +1,32 @@
+{
+  "name": "acme-reservation-planner-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon server --ignore dist/ --ignore src/ ; npm run build:dev",
+    "build": "webpack",
+    "build:dev": "npm run build -- --watch --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jpirog/acme-reservation-planner-js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jpirog/acme-reservation-planner-js/issues"
+  },
+  "homepage": "https://github.com/Jpirog/acme-reservation-planner-js#readme",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0"
+  }
+}
