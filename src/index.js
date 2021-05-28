@@ -4,11 +4,9 @@ const restList = document.querySelector('#restaurants-list');
 const reservationList = document.querySelector('#reservations-list');
 
 const renderUsers = async (users) => {
-  // if id = hash id, then add class=selected else ''
   const userId = window.location.hash.slice(1) * 1;
-  console.log("render users",userId, typeof userId)
   const html = users.map(c => `
-  <li class='users ${userId === c.id ? "selected" : ""}   ' >
+  <li class='users' data-userid='${c.id}' >
   <a href='#${c.id}'>${c.name}</a>
   </li>
   `).join('');
@@ -43,24 +41,24 @@ const init = async () => {
     renderRestaurants(data2);
   }
   catch (ex) {
-
+    console.log(ex);
   }
 }
 
 window.addEventListener('hashchange', async () => {
   const userId = window.location.hash.slice(1);
+  console.log('you selected',userId)
   const response = await (fetch(`/api/users/${userId}/reservations`))
   const data = await response.json()
   renderReservations(data);
-  const x = document.querySelectorAll('.users')
-  console.log("X",x)
-  x.element.classList.remove('selected')
-  console.log("Y",x)
+  const users = document.querySelectorAll('.users')
+  users.forEach(c => userId == c.dataset.userid ? c.classList.add('selected') : c.classList.remove('selected')); 
 })
 
 restList.addEventListener('click', async (ev) => {
   const clickedId = ev.target.dataset.restid;
   const userId = window.location.hash.slice(1);
+  
   if (!userId) {
     alert("Select a user before selecting a restaurant for a reservation")
     return;
@@ -82,14 +80,14 @@ reservationList.addEventListener('click', async (ev) => {
   if (ev.target.tagName === 'SPAN') {
     const resToCancel = ev.target.dataset.resid;
     const newRes = await (fetch(`/api/reservations/${resToCancel}`, 
-    { method: 'DELETE', 
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({"Id": resToCancel}) }))
+      { method: 'DELETE', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({"Id": resToCancel}) }))
 
-      const userId = window.location.hash.slice(1);
-      const response = await (fetch(`/api/users/${userId}/reservations`))
-      const data = await response.json()
-      renderReservations(data);
+    const userId = window.location.hash.slice(1);
+    const response = await (fetch(`/api/users/${userId}/reservations`))
+    const data = await response.json()
+    renderReservations(data);
   }
 })
 init();

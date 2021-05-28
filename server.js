@@ -145,8 +145,9 @@ app.get('/', (req, res, next)=> res.sendFile(path.join(__dirname, 'index.html'))
 
 app.get('/api/users', async(req, res, next)=> {
   try {
-    res.send(await User.findAll());
+    res.send(await User.findAll({order: [['name', 'ASC']]}));
   }
+
   catch(ex){
     next(ex);
   }
@@ -154,7 +155,7 @@ app.get('/api/users', async(req, res, next)=> {
 
 app.get('/api/restaurants', async(req, res, next)=> {
   try {
-    res.send(await Restaurant.findAll());
+    res.send(await Restaurant.findAll({order: [['name', 'ASC']]}));
   }
   catch(ex){
     next(ex);
